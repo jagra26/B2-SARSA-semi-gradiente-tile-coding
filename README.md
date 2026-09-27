@@ -25,10 +25,9 @@ E, por não agir diretamente no ambiente, e não em um modelo, o SARSA-SG-TC é 
 
 Também trata-se de um método on-policy, visto que o aprendizado dele se dá direto com o resultado das ações no ambiente. Sem nenhum tipo de política prévia.
 
+Por fim, como a política só é avaliada ao final de cada episódio, e não ao final de cada passo no espaço de estados, trata-se de um algoritmo episódico.
 
 
-<classificação: tabular/aproximação, model-free/based, on/off-policy,
- predição/controle, episódico/contínuo — cada uma com justificativa>
 <genealogia: de qual método da disciplina descende e o que muda na atualização>
 <tabela de símbolos: notação da fonte → notação da disciplina>
 <hipóteses: o que o método assume e o que quebra quando a hipótese cai>
