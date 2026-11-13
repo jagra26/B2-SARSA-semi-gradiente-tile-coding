@@ -56,6 +56,28 @@ A junção dessas duas abordagens, compõem o SARSA-SG-TC.
 
 ## Pseudocódigo
 
+$$
+\begin{aligned}
+& \texttt{Entrada: Parametrização diferenciável de função a função -- valores }\hat{q} : \mathcal{S} \times \mathcal{A} \times \mathbb{R}^d \to \mathbb{R}\\
+
+& \texttt{Parâmetro do algoritmo: Tamanho do passo }\alpha>0 \texttt{ e um pequeno } \epsilon > 0\\
+
+& \texttt{Inicialize os pesos da função-valor } \mathbf{w} \in \mathbb{R}^d\\
+
+& \texttt{Loop para cada episódio:}\\
+& \texttt{  }S, A \gets \texttt{Estado inicial e ação do episódio (por exemplo, } \epsilon \texttt{-greedy)}\\
+& \texttt{  Loop para cada passo do episódio:}\\
+& \texttt{  }\texttt{    Tome a ação } A \texttt{, observe } R, S'\\
+& \texttt{  }\texttt{  Se } S' \texttt{for terminal:}\\
+& \texttt{  }\texttt{  }\texttt{  }\mathbf{w} \leftarrow \mathbf{w} + \alpha [R - \hat{q}(S, A, \mathbf{w})] \nabla \hat{q}(S, A, \mathbf{w})\\
+& \texttt{  }\texttt{  }\texttt{  Vá para o próximo episódio}\\
+& \texttt{  }\texttt{  Escolha } A' \texttt{ Como uma função de }\hat{q}(S, ., \mathbf{w}) \texttt{ (por exemplo, } \epsilon \texttt{-greedy)}\\
+& \texttt{  }\texttt{  }\mathbf{w} \leftarrow \mathbf{w} + \alpha \left[ R + \gamma \hat{q}(S', A', \mathbf{w}) - \hat{q}(S, A, \mathbf{w}) \right] \nabla \hat{q}(S, A, \mathbf{w})\\
+& \texttt{  }\texttt{  }S \gets S'\\
+& \texttt{  }\texttt{  }A \gets A'\\
+
+\end{aligned}
+$$
 <caixa no estilo do livro>
 
 ## Implementação
