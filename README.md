@@ -31,13 +31,25 @@ Também trata-se de um método on-policy, visto que o aprendizado dele se dá di
 Por fim, como a política só é avaliada ao final de cada episódio, e não ao final de cada passo no espaço de estados, trata-se de um algoritmo episódico.
 
 <genealogia: de qual método da disciplina descende e o que muda na atualização>
+
 <tabela de símbolos: notação da fonte → notação da disciplina>
+
 <hipóteses: o que o método assume e o que quebra quando a hipótese cai>
 
 ## A ideia
+Dado que estamos trabalhando em um ambiente contínuo ou complexo, mesmo que discreto, é difícil saber qual o valor de um estado, dado uma política. Então a ideia é usar uma aproximação desse estado e minimizar o erro dessa aproximação perante o valor real. isto é feito da seguinte forma:
 
-<em palavras, antes de qualquer símbolo>
+Para cada episódio, começa-se com um par estado e ação inicial. Para cada passo dentro desse episódio, toma-se a ação inicial, observa-se o novo estado e a recompensa. Caso o estado seja terminal, a aproximação é atualizada seguindo o gradiente descendente e iterasse para o próximo episódio. Caso contrário, a aproximação é atualizada com o "episodic semi-gradient one-step Sarsa", toma-se uma nova ação e o ciclo continua.
 
+Em espaços contínuos, costumeiramente bidimensionais, a técnica de tilecoding surge como a discretização desse espaço, onde vários grids deslocados são postos sobre um mesmo espaço, o que dá um número maior de features pra um mesmo ponto. Isso fica mais claro com a Figura 9.9 do livro do Sutton & Barto:
+
+![tilecoding](media/Barto9.9.png)
+
+Que, em geral, faz com que a discretização represente mais fielmente o valor contínuo, que por sua vez faz com que os algoritmos covirjam mais rápido usando essa abordagem, como mostra a figura 9.10do livro do Sutton & Barto:
+
+![tilecoding](media/Barto9.10.png)
+
+A junção dessas duas abordagens, compõem o SARSA-SG-TC.
 ## Formalização
 
 <derivação passo a passo, na notação da disciplina>
