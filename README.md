@@ -32,7 +32,23 @@ Por fim, como a política só é avaliada ao final de cada episódio, e não ao 
 
 <genealogia: de qual método da disciplina descende e o que muda na atualização>
 
-<tabela de símbolos: notação da fonte → notação da disciplina>
+### Tabela de símbolos
+
+| Símbolo | Nome | O que é |
+|---|---|---|
+| $t$ | passo de tempo | o tempo é discreto: $t = 0, 1, 2, \dots$ |
+| $S_t \in \mathcal{S}$ | estado  | o que o agente sabe no instante $t$ |
+| $A_t \in \mathcal{A}(s)$ | ação  | a única coisa que o agente controla |
+| $R_{t+1} \in \mathbb{R}$ | recompensa  | avaliação imediata, escalar |
+| $\mathbf{w}_t$ | pesos | vetor de pesos que atualiza a aproximação |
+| $a$ | ação | ação disponível em $S_t$
+| $q_\pi(S_t,A_t)$ | valor da ação | retorno esperado fixando a primeira ação |
+| $\hat{q}(S_t,a,\mathbf{w}_t)$ | valor da ação aproximado | aproximação de retorno esperado |
+| $G_t$ | retorno | soma descontada das recompensas futuras |
+| $U_t$ | atualização de alvo | Qualquer aproximação de $q_\pi(S_t,A_t)$, incluindo qualquer dos retornos de SARSA n-step ou $G_t$ |
+| $\alpha$ | tamanho do passo | é um ganho positivo, o quanto algoritmo "anda" |
+| $\epsilon$ | avaliação de politica | é a estratégia de melhoramento de política, por exemplo, $\epsilon$-greedy |
+| $A^*_t$ | ação greedy | é a ação mais vantajosa naquele momento |
 
 <hipóteses: o que o método assume e o que quebra quando a hipótese cai>
 
