@@ -112,11 +112,20 @@ $$
 
 \end{aligned}
 $$
-<caixa no estilo do livro>
 
 ## Implementação
 
-<as decisões que o pseudocódigo esconde>
+O projeto está dividido em quatro arquivos: [main.py](scripts/main.py), [semi_gradient_sarsa.py](scripts/semi_gradient_sarsa.py), [tile_coding.py](scripts/tile_coding.py), e [train.py](scripts/train.py). Cada um deles está descrito abaixo:
+
+* [main.py](scripts/main.py) É onde ocorre de fato a execução do algoritmo, já treinado. Para isso, carrega-se os aqruivos .pkl ([tilings.pkl](scripts/tilings.pkl) e [weights.pkl](scripts/weights.pkl)), que contém o resultado do treinamento. A cada iteração do loop uma nova ação é ecolhida, seu resultado é atualizado no ambiente, que pode ser visualizado por uma janela do pygame.
+
+* [semi_gradient_sarsa.py](scripts/semi_gradient_sarsa.py), Aqui é onde há de fato a implementação do SARSA-SG-TC. Primeiramente há uma classe com todos os parâmetros necessários ao algoritmo. A função "update_weight", faz a jogada entre o gradiente descendente e o semi gradiente, que foi comentada na [formalização](#formalização). A função "train" implementa a lógica apresentada no [pseudocódigo](#pseudocódigo), há um detalhe na decisão que considera se o estado é terminal, para a geração de figuras, tbm se considerou um limite de passos. Existe uma subrotina "plot_cost_to_go" que é usada para gerar as figuras de "cost-to-go" que serão explicadas na seção de [Experimento](#experimento) e também há uma chamada de "save_params", que persiste o resultado do treinamento nos aqruivos .pkl ([tilings.pkl](scripts/tilings.pkl) e [weights.pkl](scripts/weights.pkl)) . A função "select_action", implementa a questão de decidir qual a melhor ação disponível, , que foi comentada na [formalização], é usada tanto para o treinamento, quanto para a execução. As demais funções são auxiliares, tratam da manipulação de vetores, dicionários e do tile coding.
+
+* [tile_coding.py](scripts/tile_coding.py) é uma biblioteca escrita por Sutton e Barto, sem nenhuma modificação, que implementa toda a lógica de tile coding. Nesse projeto é uma abstração para a implementação do SARSA-SG-TC.
+
+* [train.py](scripts/train.py) é uma abstração de [semi_gradient_sarsa.py](scripts/semi_gradient_sarsa.py), a função "train" é um atalho para sua homônima, já explicada, porém inclui uma subrotina que é pré-requisito pra execução dela. Além de duas funções que são usadas para gerar a figura de curva de aprendizado, que será explicada na seção de [Experimento](#experimento).
+
+
 
 ## Experimento: <a pergunta></a>
 
@@ -138,5 +147,3 @@ Jabrah Tutorials tem uma aula muito boa sobre o assunto e foi a principal refer�
 
 O'Neill tem uma forma muito didática de explicar, além de fazer muitas comparações com métodos mais tradicionais. Também possui uma implementação do problema, que considerei mais complexa que a de Jabrah. Porém, sua visualização da figura cost to go, foi útil para a criação das figuras desse trabalho.
 
-<bibliografia com capítulo e seção; artigos; implementações consultadas>
-<divergências entre fontes e qual versão foi seguida>
