@@ -61,14 +61,32 @@ Em espaços contínuos, costumeiramente bidimensionais, a técnica de tilecoding
 
 ![tilecoding](media/Barto9.9.png)
 
-Que, em geral, faz com que a discretização represente mais fielmente o valor contínuo, que por sua vez faz com que os algoritmos covirjam mais rápido usando essa abordagem, como mostra a figura 9.10do livro do Sutton & Barto:
+Que, em geral, faz com que a discretização represente mais fielmente o valor contínuo, que por sua vez faz com que os algoritmos convirjam mais rápido usando essa abordagem, como mostra a figura 9.10 do livro do Sutton & Barto:
 
 ![tilecoding](media/Barto9.10.png)
 
 A junção dessas duas abordagens, compõem o SARSA-SG-TC.
 ## Formalização
 
-<derivação passo a passo, na notação da disciplina>
+Primeiramente, precisamos considerar que estamos trabalhando com uma aproximação $\hat{q}$, isto é, $\hat{q} \approx q_\pi$. que é parametrizada de forma funcional com um vetor de pesos $\mathbf{w}$. Ou seja, para computar $\hat{q}$, precisamos de $\mathbf{w}$ atualizado.
+
+E esse é o grande ponto do SARSA-SG-TC, a atualização de $\mathbf{w}$. Isso é feito de duas maneiras distintas. A primeira é mais direta, é o caso geral da atualização de função ação-valor por gradiente descendente:
+
+$\mathbf{w}_{t+1} \doteq \mathbf{w}_t + \alpha \left[ U_t - \hat{q}(S_t, A_t, \mathbf{w}_t) \right] \nabla \hat{q}(S_t, A_t, \mathbf{w}_t)$
+
+Esse caso é usado quando chegamos a um conjunto de ações pequeno, na prática, quando um estado é terminal. Contudo, na maior parte do tempo, a atualização de $\mathbf{w}$ é dada por:
+
+$\mathbf{w}_{t+1} \doteq \mathbf{w}_t + \alpha \left[ R_{t+1} + \gamma \hat{q}(S_{t+1}, A_{t+1}, \mathbf{w}_t) - \hat{q}(S_t, A_t, \mathbf{w}_t) \right] \nabla \hat{q}(S_t, A_t, \mathbf{w}_t)$
+
+Que é o famoso semi-gradiente, "episodic semi-gradient one-step Sarsa", e opera bem em conjuntos grandes de ações, contínuos, que exigem pesquisa e que ainda não têm uma resolução clara.
+
+Com isso, para cada ação $a$ disponível para o estado atual, $S_t$, é possível computar $\hat{q}(S_t, a, \mathbf{w}_t)$ e encontrar a "greedy action", que é dada por:
+
+$A_t^* = \operatorname*{arg\,max}_a \hat{q}(S_t, a, \mathbf{w}_t)$
+
+Que pode ser computada de diferentes formas, comumente $\epsilon$-greedy, e as açoẽs serão selecionadas dessa maneira.
+
+Note também, que os estados são representados por vetores de acordo com o tile-coding escolhido. Por exemplo, um estado bidimensional, que seria representado por um vetor de duas posições, com um tile-coding de 8, será representado por 16 posições. Essa abordagem está acontecendo a todo momento durante a execução do algoritmo.
 
 ## Pseudocódigo
 
@@ -84,7 +102,7 @@ $$
 & \texttt{  }S, A \gets \texttt{Estado inicial e ação do episódio (por exemplo, } \epsilon \texttt{-greedy)}\\
 & \texttt{  Loop para cada passo do episódio:}\\
 & \texttt{  }\texttt{    Tome a ação } A \texttt{, observe } R, S'\\
-& \texttt{  }\texttt{  Se } S' \texttt{for terminal:}\\
+& \texttt{  }\texttt{  Se } S' \texttt{ for terminal:}\\
 & \texttt{  }\texttt{  }\texttt{  }\mathbf{w} \leftarrow \mathbf{w} + \alpha [R - \hat{q}(S, A, \mathbf{w})] \nabla \hat{q}(S, A, \mathbf{w})\\
 & \texttt{  }\texttt{  }\texttt{  Vá para o próximo episódio}\\
 & \texttt{  }\texttt{  Escolha } A' \texttt{ Como uma função de }\hat{q}(S, ., \mathbf{w}) \texttt{ (por exemplo, } \epsilon \texttt{-greedy)}\\
