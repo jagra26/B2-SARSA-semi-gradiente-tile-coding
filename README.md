@@ -82,7 +82,7 @@ Que é o famoso semi-gradiente, "episodic semi-gradient one-step Sarsa", e opera
 
 Com isso, para cada ação $a$ disponível para o estado atual, $S_t$, é possível computar $\hat{q}(S_t, a, \mathbf{w}_t)$ e encontrar a "greedy action", que é dada por:
 
-$A_t^* = \operatorname*{arg\,max}_a \hat{q}(S_t, a, \mathbf{w}_t)$
+$A_t^* = \arg\max_a \hat{q}(S_t, a, \mathbf{w}_t)$
 
 Que pode ser computada de diferentes formas, comumente $\epsilon$-greedy, e as açoẽs serão selecionadas dessa maneira.
 
@@ -92,28 +92,21 @@ $\hat{q}(s, a, \mathbf{w}) \doteq \mathbf{w}^\top \mathbf{x}(s, a) = \sum_{i=1}^
 
 ## Pseudocódigo
 
-$$
-\begin{aligned}
-& \texttt{Entrada: Parametrização diferenciável de função a função -- valores }\hat{q} : \mathcal{S} \times \mathcal{A} \times \mathbb{R}^d \to \mathbb{R}\\
-
-& \texttt{Parâmetro do algoritmo: Tamanho do passo }\alpha>0 \texttt{ e um pequeno } \epsilon > 0\\
-
-& \texttt{Inicialize os pesos da função-valor } \mathbf{w} \in \mathbb{R}^d\\
-
-& \texttt{Loop para cada episódio:}\\
-& \texttt{  }S, A \gets \texttt{Estado inicial e ação do episódio (por exemplo, } \epsilon \texttt{-greedy)}\\
-& \texttt{  Loop para cada passo do episódio:}\\
-& \texttt{  }\texttt{    Tome a ação } A \texttt{, observe } R, S'\\
-& \texttt{  }\texttt{  Se } S' \texttt{ for terminal:}\\
-& \texttt{  }\texttt{  }\texttt{  }\mathbf{w} \leftarrow \mathbf{w} + \alpha [R - \hat{q}(S, A, \mathbf{w})] \nabla \hat{q}(S, A, \mathbf{w})\\
-& \texttt{  }\texttt{  }\texttt{  Vá para o próximo episódio}\\
-& \texttt{  }\texttt{  Escolha } A' \texttt{ Como uma função de }\hat{q}(S, ., \mathbf{w}) \texttt{ (por exemplo, } \epsilon \texttt{-greedy)}\\
-& \texttt{  }\texttt{  }\mathbf{w} \leftarrow \mathbf{w} + \alpha \left[ R + \gamma \hat{q}(S', A', \mathbf{w}) - \hat{q}(S, A, \mathbf{w}) \right] \nabla \hat{q}(S, A, \mathbf{w})\\
-& \texttt{  }\texttt{  }S \gets S'\\
-& \texttt{  }\texttt{  }A \gets A'\\
-
-\end{aligned}
-$$
+| Entrada: Parametrização diferenciável de função -- valores $\hat{q} : \mathcal{S} \times \mathcal{A} \times \mathbb{R}^d \to \mathbb{R}$ | 
+|---|
+| Parâmetro do algoritmo: Tamanho do passo $\alpha>0$ e um pequeno $\epsilon > 0$ |
+| Inicialize os pesos da função-valor  $\mathbf{w} \in \mathbb{R}^d$ |
+| Loop para cada episódio: |
+| &nbsp;&nbsp; $S, A \gets$ Estado inicial e ação do episódio (por exemplo, \epsilon -greedy) |
+| &nbsp;&nbsp;Loop para cada passo do episódio: |
+| &nbsp;&nbsp;&nbsp;&nbsp;Tome a ação $A$, observe $R, S'$ |
+| &nbsp;&nbsp;&nbsp;&nbsp;Se $S'$  for terminal: |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$\mathbf{w} \leftarrow \mathbf{w} + \alpha [R - \hat{q}(S, A, \mathbf{w})] \nabla \hat{q}(S, A, \mathbf{w})$ |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vá para o próximo episódio |
+| &nbsp;&nbsp;Escolha $A'$  Como uma função de $\hat{q}(S, ., \mathbf{w})$  (por exemplo, \epsilon -greedy) |
+| &nbsp;&nbsp;$\mathbf{w} \leftarrow \mathbf{w} + \alpha \left[ R + \gamma \hat{q}(S', A', \mathbf{w}) - \hat{q}(S, A, \mathbf{w}) \right] \nabla \hat{q}(S, A, \mathbf{w})$ |
+| &nbsp;&nbsp;$S \gets S'$ |
+| &nbsp;&nbsp;$A\gets A'$ |
 
 ## Implementação
 
@@ -158,7 +151,7 @@ A primeira é mais difícil de entender, porém é mais fácil de obter. Para ta
 
 Que seguem comportamento muito similar ao apresentado por Sutton e Barto, inicia de maneira exploratória, com movimento circular no espaço, em torno do estado original. Em seguida o ambiente é melhor conhecido, percebe-se que ficar no fundo do vale com a velocidade nula é um péssimo negócio, representado pelo pico. Também nota-se que a redução da velocidade, diminui o custo, então pegar embalo torna-se vantajoso. E, por fim, quando se está perto do objetivo, basta um pequeno esforço para o custo diminuir abruptamente. Todo esse comportamento, comprova que o agente de fato aprendeu.
 
-Já a segunda figura é simples de compreender e custosa de obter.
+Já a segunda figura é simples de compreender e custosa de obter. Pois exige a repetição do treinamento por 300 veze, 100 vezes para cada valor de $\alpha$
 
 ## Limites
 
