@@ -32,7 +32,7 @@ class SemiGradientSarsa(object):
         self.scale = 8.0 / (obs_high - obs_low)   # array de shape (2,)
 
         # IHT generoso
-        self.tile_coding = IHT(4096 * 8)
+        self.tile_coding = IHT(4096)
         self.w = np.zeros(self.tile_coding.size)
 
     def q_func(self, feature_vector):

@@ -15,15 +15,15 @@ sarsa.load_params()
 
 env = gym.make("MountainCar-v0", render_mode='human')
 state, info = env.reset(seed=10)
-X, Y, Z = [state[0]], [state[1]], [0]
+#X, Y, Z = [state[0]], [state[1]], [0]
 
 for i in range(300):
     action = sarsa.select_action(state, eps_greedy=False)
     print(action)
     next_state, reward, terminated, truncated, info = env.step(action)
-    X.append(state[0])
-    Y.append(state[1])
-    Z.append(action)
+    #X.append(state[0])
+    #Y.append(state[1])
+    #Z.append(action)
     # Render the env
     env.render()
 

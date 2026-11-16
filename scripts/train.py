@@ -53,4 +53,4 @@ eps = 500
 runs = 100
 learning_curves_plot(learning_curves_data(runs = runs, eps=eps), runs, eps)
 
-train(0.5/8, 9000, end_steps=False)
+#train(0.5/8, 9000, end_steps=False)
