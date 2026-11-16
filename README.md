@@ -92,21 +92,22 @@ $\hat{q}(s, a, \mathbf{w}) \doteq \mathbf{w}^\top \mathbf{x}(s, a) = \sum_{i=1}^
 
 ## Pseudocódigo
 
-| Entrada: Parametrização diferenciável de função -- valores $\hat{q} : \mathcal{S} \times \mathcal{A} \times \mathbb{R}^d \to \mathbb{R}$ | 
+| Pseudocódigo | 
 |---|
+| Entrada: Parametrização diferenciável de função -- valores $\hat{q} : \mathcal{S} \times \mathcal{A} \times \mathbb{R}^d \to \mathbb{R}$ | 
 | Parâmetro do algoritmo: Tamanho do passo $\alpha>0$ e um pequeno $\epsilon > 0$ |
-| Inicialize os pesos da função-valor  $\mathbf{w} \in \mathbb{R}^d$ |
+| Inicialize os pesos da função-valor $\mathbf{w} \in \mathbb{R}^d $ |
 | Loop para cada episódio: |
-| &nbsp;&nbsp; $S, A \gets$ Estado inicial e ação do episódio (por exemplo, \epsilon -greedy) |
+| &nbsp;&nbsp; $S, A \gets$ Estado inicial e ação do episódio (por exemplo, $\epsilon$-greedy) |
 | &nbsp;&nbsp;Loop para cada passo do episódio: |
 | &nbsp;&nbsp;&nbsp;&nbsp;Tome a ação $A$, observe $R, S'$ |
 | &nbsp;&nbsp;&nbsp;&nbsp;Se $S'$  for terminal: |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$\mathbf{w} \leftarrow \mathbf{w} + \alpha [R - \hat{q}(S, A, \mathbf{w})] \nabla \hat{q}(S, A, \mathbf{w})$ |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $\mathbf{w} \leftarrow \mathbf{w} + \alpha [R - \hat{q}(S, A, \mathbf{w})] \nabla \hat{q}(S, A, \mathbf{w})$ |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vá para o próximo episódio |
-| &nbsp;&nbsp;Escolha $A'$  Como uma função de $\hat{q}(S, ., \mathbf{w})$  (por exemplo, \epsilon -greedy) |
-| &nbsp;&nbsp;$\mathbf{w} \leftarrow \mathbf{w} + \alpha \left[ R + \gamma \hat{q}(S', A', \mathbf{w}) - \hat{q}(S, A, \mathbf{w}) \right] \nabla \hat{q}(S, A, \mathbf{w})$ |
-| &nbsp;&nbsp;$S \gets S'$ |
-| &nbsp;&nbsp;$A\gets A'$ |
+| &nbsp;&nbsp;Escolha $A'$  Como uma função de $\hat{q}(S, ., \mathbf{w})$  (por exemplo, $\epsilon$-greedy) |
+| &nbsp;&nbsp; $\mathbf{w} \leftarrow \mathbf{w} + \alpha \left[ R + \gamma \hat{q}(S', A', \mathbf{w}) - \hat{q}(S, A, \mathbf{w}) \right] \nabla \hat{q}(S, A, \mathbf{w})$ |
+| &nbsp;&nbsp; $S \gets S'$ |
+| &nbsp;&nbsp; $A\gets A'$ |
 
 ## Implementação
 
