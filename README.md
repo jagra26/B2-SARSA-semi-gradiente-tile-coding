@@ -86,7 +86,9 @@ $A_t^* = \operatorname*{arg\,max}_a \hat{q}(S_t, a, \mathbf{w}_t)$
 
 Que pode ser computada de diferentes formas, comumente $\epsilon$-greedy, e as açoẽs serão selecionadas dessa maneira.
 
-Note também, que os estados são representados por vetores de acordo com o tile-coding escolhido. Por exemplo, um estado bidimensional, que seria representado por um vetor de duas posições, com um tile-coding de 8, será representado por 16 posições. Essa abordagem está acontecendo a todo momento durante a execução do algoritmo.
+Note também, que os estados são representados por vetores de features $\mathbf{x}(s,a)$. Essa abordagem implica em uma alteração na aproximação $\hat{q}$, que agora deve considerar $\mathbf{x}$:
+
+$\hat{q}(s, a, \mathbf{w}) \doteq \mathbf{w}^\top \mathbf{x}(s, a) = \sum_{i=1}^d w_i \cdot x_i(s, a)$
 
 ## Pseudocódigo
 
@@ -127,9 +129,36 @@ O projeto está dividido em quatro arquivos: [main.py](scripts/main.py), [semi_g
 
 
 
-## Experimento: <a pergunta></a>
+## Experimento: 
 
-<figura, o que ela mostra, por que era esse o resultado esperado>
+A ideia é reproduzir o cenário "Mountain Car", que trata do desafio de subir uma ladeira muito íngrime com um carro muito fraco. Se tentar só acelerar, o carro morre na metade, é preciso voltar e pegar "embalo". Repete-se esse processo até que é possível chegar ao cume da montanha. Esse cenário pode ser visto no canto superior esquerdo da figura 10.1 de Sutton e Barto:
+
+![Barto10.1](media/Barto10.1.png)
+
+Nesse cenário há 3 possíveis ações, acelerar para frente, com recompensa +1, acelerar para trás, com recompensa -1, e não acelerar, com recompensa 0.
+
+A física do problema é regida por uma equação de posição e outra de velocidade, porém isso é embutido no ambiente do gymnasium, não entrarei em detalhes nesse texto.
+
+As outras subfiguras mostram a evolução do treinamento, com o passar dos episódios. A faixa verde no canto direito é o objetivo, a posição 0.6 significa que subimos a ladeira, independente de velocidade. A altura da superfície aponta o quão difícil é chegar no objetivo a partir daquele estado.
+
+Note que a altura das figuras aumenta com o passar do tempo, isso significa que o sistema entendeu melhor o ambiente e sabe a real dificuldade de sair de um vale com baixa velocidade, por exemplo.
+
+Também é notável que o "relevo" vai ficando mais bem definido com o passar do tempo, mostrando que o sistema realmente "aprendeu". Se tentar só subir a ladeira aumentando a velocidade, o custo aumenta. Se ganhar velocidade negativa, o custo diminui, adquire-se o "embalo" e fica mais fácil chegar no objetivo.
+
+Outra questão interessante é saber o quanto o tamanho do passo influi na convergência do algoritmo, como mostra a figura 10.2 de Sutton e Barto:
+
+![Barto10.2](media/Barto10.2.png)
+
+Nosso objetivo é reproduzir as duas figuras apresentadas.
+
+A primeira é mais difícil de entender, porém é mais fácil de obter. Para tal, basta executar a função train com a flag generate_figs ligada. Quando chega-se a um final de episódio e é um dos episódios a ter a figura gerada, os dados do episódio geram uma meshgrid, que formarão as figuras a seguir:
+| ![cost_to_go_ep1](media/cost_to_go_ep1.png)  | ![cost_to_go_ep12](media/cost_to_go_ep12.png)  | ![cost_to_go_ep104](media/cost_to_go_ep104.png)  |
+|---|---|---|
+| ![cost_to_go_ep500](media/cost_to_go_ep500.png)  | ![cost_to_go_ep1000](media/cost_to_go_ep1000.png)  | ![cost_to_go_ep9000](media/cost_to_go_ep9000.png)  |
+
+Que seguem comportamento muito similar ao apresentado por Sutton e Barto, inicia de maneira exploratória, com movimento circular no espaço, em torno do estado original. Em seguida o ambiente é melhor conhecido, percebe-se que ficar no fundo do vale com a velocidade nula é um péssimo negócio, representado pelo pico. Também nota-se que a redução da velocidade, diminui o custo, então pegar embalo torna-se vantajoso. E, por fim, quando se está perto do objetivo, basta um pequeno esforço para o custo diminuir abruptamente. Todo esse comportamento, comprova que o agente de fato aprendeu.
+
+Já a segunda figura é simples de compreender e custosa de obter.
 
 ## Limites
 
