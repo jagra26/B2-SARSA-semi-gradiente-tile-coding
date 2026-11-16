@@ -152,7 +152,11 @@ A primeira é mais difícil de entender, porém é mais fácil de obter. Para ta
 
 Que seguem comportamento muito similar ao apresentado por Sutton e Barto, inicia de maneira exploratória, com movimento circular no espaço, em torno do estado original. Em seguida o ambiente é melhor conhecido, percebe-se que ficar no fundo do vale com a velocidade nula é um péssimo negócio, representado pelo pico. Também nota-se que a redução da velocidade, diminui o custo, então pegar embalo torna-se vantajoso. E, por fim, quando se está perto do objetivo, basta um pequeno esforço para o custo diminuir abruptamente. Todo esse comportamento, comprova que o agente de fato aprendeu.
 
-Já a segunda figura é simples de compreender e custosa de obter. Pois exige a repetição do treinamento por 300 veze, 100 vezes para cada valor de $\alpha$
+Já a segunda figura é simples de compreender e custosa de obter. Pois exige a repetição do treinamento por 300 vezes, 100 vezes para cada valor de $\alpha$, e é preciso acumular a quantidade de passos por cada episódio. Apesar de ser um processo demorado, uma vez coletados os dados, é um plot bem simples:
+
+![learningcurves](media/Learning_curves.png)
+
+E assim como Sutton e Barto, é possível observar que um valor $\alpha$ maior tende a ter um aprendizado mais rápido. Para um treinamento sem limite de episódios, o comportamento assintótico sugere que um valor menor de $\alpha$ pode gerar um resultado mais assertivo, porém o responsável deve pesar se compensa esse tempo a mais de treinamento, jã que o ganho não é tão diferente.
 
 ## Limites
 
