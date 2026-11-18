@@ -14,7 +14,7 @@ gerenciamento de arquivos...
 Representar esses cenários é computacionalmente custoso, principalmente para métodos tabulares tradicionais, como ação valor,
 bandit e implementações incrementais. Uma alternativa viável é SARSA semi-gradient com tile-coding.
 
-Para fins didáticos, utilizarei o acrônimo SARSA-SG-TC para me referir ao algoritmo, ressalto que nenhuma das referências utilizadas
+Para fins práticos, utilizarei o acrônimo SARSA-SG-TC para me referir ao algoritmo, ressalto que nenhuma das referências utilizadas
 usa esse termo.
 
 ## Onde isto se encaixa
@@ -30,7 +30,9 @@ Também trata-se de um método on-policy, visto que o aprendizado dele se dá di
 
 Por fim, como a política só é avaliada ao final de cada episódio, e não ao final de cada passo no espaço de estados, trata-se de um algoritmo episódico.
 
-<genealogia: de qual método da disciplina descende e o que muda na atualização>
+### Genealogia
+
+O SARSA-SG-TC se enquadra no oitavo tópico da disciplina, Predição e controle on-policy com aproximação, sendo uma extensão natural do semi-gradient $TD(0)$. Pois ao invés de só olhar o estado, como faz o $TD(0)$, considera-se também a ação. E, ainda, a mesma técnica de semi gradiente é utilizada.
 
 ### Tabela de símbolos
 
@@ -50,7 +52,11 @@ Por fim, como a política só é avaliada ao final de cada episódio, e não ao 
 | $\epsilon$ | avaliação de politica | é a estratégia de melhoramento de política, por exemplo, $\epsilon$-greedy |
 | $A^*_t$ | ação greedy | é a ação mais vantajosa naquele momento |
 
-<hipóteses: o que o método assume e o que quebra quando a hipótese cai>
+### Hipóteses
+
+Primeiramente  o ambiente tem de ter a propriedade de Markov, MDP, ou seja, o estado atual tem o necessário para prever o futuro, independentemente do passado. Caso isso não seja atendido, o algoritmo não vai conseguir convergir para uma política ótima por conflitos em pesos.
+
+Segundamente, a aproximação da função de valor é linear, ou diferenciável. Quebrando isso, o algoritmo se torna muito complexo ou muito custoso. Se isso for combinado com os demais pés da "triáde mortal", mencionada por Sutton e Barto no capítulo 11.3, facilmente o algoritmo não irá convergir ou será instável.
 
 ## A ideia
 Dado que estamos trabalhando em um ambiente contínuo ou complexo, mesmo que discreto, é difícil saber qual o valor de um estado, dado uma política. Então a ideia é usar uma aproximação desse estado e minimizar o erro dessa aproximação perante o valor real. isto é feito da seguinte forma:
@@ -66,6 +72,7 @@ Que, em geral, faz com que a discretização represente mais fielmente o valor c
 ![tilecoding](media/Barto9.10.png)
 
 A junção dessas duas abordagens, compõem o SARSA-SG-TC.
+
 ## Formalização
 
 Primeiramente, precisamos considerar que estamos trabalhando com uma aproximação $\hat{q}$, isto é, $\hat{q} \approx q_\pi$. que é parametrizada de forma funcional com um vetor de pesos $\mathbf{w}$. Ou seja, para computar $\hat{q}$, precisamos de $\mathbf{w}$ atualizado.
@@ -86,7 +93,7 @@ $A_t^* = \arg\max_a \hat{q}(S_t, a, \mathbf{w}_t)$
 
 Que pode ser computada de diferentes formas, comumente $\epsilon$-greedy, e as açoẽs serão selecionadas dessa maneira.
 
-Note também, que os estados são representados por vetores de features $\mathbf{x}(s,a)$. Essa abordagem implica em uma alteração na aproximação $\hat{q}$, que agora deve considerar $\mathbf{x}$:
+Note também, com o tile-coding, que os estados são representados por vetores de features $\mathbf{x}(s,a)$. Essa abordagem implica em uma alteração na aproximação $\hat{q}$, que agora deve considerar $\mathbf{x}$:
 
 $\hat{q}(s, a, \mathbf{w}) \doteq \mathbf{w}^\top \mathbf{x}(s, a) = \sum_{i=1}^d w_i \cdot x_i(s, a)$
 
@@ -111,16 +118,13 @@ $\hat{q}(s, a, \mathbf{w}) \doteq \mathbf{w}^\top \mathbf{x}(s, a) = \sum_{i=1}^
 
 ## Implementação
 
-O projeto está dividido em quatro arquivos: [main.py](scripts/main.py), [semi_gradient_sarsa.py](scripts/semi_gradient_sarsa.py), [tile_coding.py](scripts/tile_coding.py), e [train.py](scripts/train.py). Cada um deles está descrito abaixo:
+O projeto está dividido em três arquivos: [main.py](scripts/main.py), [semi_gradient_sarsa.py](scripts/semi_gradient_sarsa.py) e [tile_coding.py](scripts/tile_coding.py). Cada um deles está descrito abaixo:
 
-* [main.py](scripts/main.py) É onde ocorre de fato a execução do algoritmo, já treinado. Para isso, carrega-se os aqruivos .pkl ([tilings.pkl](scripts/tilings.pkl) e [weights.pkl](scripts/weights.pkl)), que contém o resultado do treinamento. A cada iteração do loop uma nova ação é ecolhida, seu resultado é atualizado no ambiente, que pode ser visualizado por uma janela do pygame.
+* [main.py](scripts/main.py) É onde ocorre de fato a execução do algoritmo, já treinado. Para isso, carrega-se os aqruivos .pkl ([tilings.pkl](scripts/tilings.pkl) e [weights.pkl](scripts/weights.pkl)), que contém o resultado do treinamento. A cada iteração do loop uma nova ação é ecolhida, seu resultado é atualizado no ambiente, que pode ser visualizado por uma janela do pygame. A função "train" é um atalho para sua homônima, que será explicada a seguir, porém inclui uma subrotina que é pré-requisito pra execução dela. Além de duas funções que são usadas para gerar a figura de curva de aprendizado, que será explicada na seção de [Experimento](#experimento).
 
 * [semi_gradient_sarsa.py](scripts/semi_gradient_sarsa.py), Aqui é onde há de fato a implementação do SARSA-SG-TC. Primeiramente há uma classe com todos os parâmetros necessários ao algoritmo. A função "update_weight", faz a jogada entre o gradiente descendente e o semi gradiente, que foi comentada na [formalização](#formalização). A função "train" implementa a lógica apresentada no [pseudocódigo](#pseudocódigo), há um detalhe na decisão que considera se o estado é terminal, para a geração de figuras, tbm se considerou um limite de passos. Existe uma subrotina "plot_cost_to_go" que é usada para gerar as figuras de "cost-to-go" que serão explicadas na seção de [Experimento](#experimento) e também há uma chamada de "save_params", que persiste o resultado do treinamento nos aqruivos .pkl ([tilings.pkl](scripts/tilings.pkl) e [weights.pkl](scripts/weights.pkl)) . A função "select_action", implementa a questão de decidir qual a melhor ação disponível, , que foi comentada na [formalização], é usada tanto para o treinamento, quanto para a execução. As demais funções são auxiliares, tratam da manipulação de vetores, dicionários e do tile coding.
 
 * [tile_coding.py](scripts/tile_coding.py) é uma biblioteca escrita por Sutton e Barto, sem nenhuma modificação, que implementa toda a lógica de tile coding. Nesse projeto é uma abstração para a implementação do SARSA-SG-TC.
-
-* [train.py](scripts/train.py) é uma abstração de [semi_gradient_sarsa.py](scripts/semi_gradient_sarsa.py), a função "train" é um atalho para sua homônima, já explicada, porém inclui uma subrotina que é pré-requisito pra execução dela. Além de duas funções que são usadas para gerar a figura de curva de aprendizado, que será explicada na seção de [Experimento](#experimento).
-
 
 
 ## Experimento: 
@@ -160,7 +164,9 @@ E assim como Sutton e Barto, é possível observar que um valor $\alpha$ maior t
 
 ## Limites
 
-<onde falha; qual método resolve isso>
+O principal cenário onde esse método falha é quando a aproximação da função valor não é linear. Nesses casos o DeepRL e métodos com gradiente verdadeiro, como o Gradient-TD, funcionam melhor.
+
+Outro cenário que funciona, mas não é prático, são em casos mais simples, já discretos, com poucos estados. É mais fácil implementar métodos tabulares ou mais tradicionais como o Monte Carlo.
 
 ## Referências
 
@@ -173,4 +179,6 @@ A principal referência foi Sutton & Barto, que também é referência para as d
 Jabrah Tutorials tem uma aula muito boa sobre o assunto e foi a principal referência em código. Contudo, algumas mudanças significativas foram feitas, principalmente para o ajuste do tile coding e geração de figuras.
 
 O'Neill tem uma forma muito didática de explicar, além de fazer muitas comparações com métodos mais tradicionais. Também possui uma implementação do problema, que considerei mais complexa que a de Jabrah. Porém, sua visualização da figura cost to go, foi útil para a criação das figuras desse trabalho.
+
+O DeepSeek foi utilizado para organizar ideias e para adaptar o código de O'neill para o formato compatível com o de Jabrah, além de ajustar o uso do tile coding. O Copilot foi usado para fazer a CLI do código.
 
