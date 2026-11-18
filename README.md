@@ -2,7 +2,7 @@
 
 Autoria: João Arthur Gaia da Rocha Almeida · 2026.2 · PPGI071 Aprendizado por Reforço (UFAL)
 
-Referência: Sutton & Barto (2020), § 10.1 / Lapan (2024), cap. Z
+Referência: Sutton & Barto (2020), § 10.1
 
 ## Motivação
 
